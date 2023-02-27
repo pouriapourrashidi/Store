@@ -2,6 +2,7 @@ import os
 
 from flask import Flask, jsonify
 from flask_smorest import Api
+from flask_migrate import Migrate
 
 from db import db
 import models
@@ -32,6 +33,8 @@ def create_app(db_URL=None):
     db.init_app(app)
 
     api = Api(app)
+
+    migrate=Migrate(app,db)
 
     app.config["JWT_SECRET_KEY"]="279953559713017948055185980331502847475"
     jwt=JWTManager(app)
@@ -65,8 +68,8 @@ def create_app(db_URL=None):
             jsonify({"Message": "Request doesn't include any access token."}), 401
         )
 
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
 
     api.register_blueprint(ItemBlueprint)
     api.register_blueprint(StoreBlueprint)
